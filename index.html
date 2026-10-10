@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Économiseur d’Écran</title>
+  <link rel="stylesheet" href="css/economiseur.css">
+ </head>
+ <body data-template-id="__page-root" style="background: rgb(7, 17, 30);">
+  <main class="screen-shell breathing-on interface-pulse" id="screenShell" aria-label="Économiseur d’écran animé">
+   <div class="orb orb-a" aria-hidden="true"></div>
+   <div class="orb orb-b" aria-hidden="true"></div>
+   <div class="orb orb-c" aria-hidden="true"></div>
+   <div class="particle-field" aria-hidden="true"><span class="particle" style="--size:3px;--duration:22s;--delay:-4s;--drift:20vw;left:9%"></span> <span class="particle" style="--size:5px;--duration:29s;--delay:-16s;--drift:-13vw;left:23%"></span> <span class="particle" style="--size:2px;--duration:19s;--delay:-8s;--drift:8vw;left:41%"></span> <span class="particle" style="--size:4px;--duration:26s;--delay:-20s;--drift:-18vw;left:58%"></span> <span class="particle" style="--size:3px;--duration:32s;--delay:-10s;--drift:14vw;left:74%"></span> <span class="particle" style="--size:5px;--duration:24s;--delay:-13s;--drift:-8vw;left:90%"></span>
+   </div>
+   <section class="clock-stage" id="clockStage" aria-label="Informations actuelles">
+    <div class="clock-stack pulse-on" id="clockStack">
+     <div class="clock-visual">
+      <div class="wave-layer" aria-hidden="true"><span class="wave"></span><span class="wave"></span><span class="wave"></span>
+      </div>
+      <div class="clock-ring" aria-hidden="true"></div>
+      <div class="orbital-ring" aria-hidden="true"></div>
+      <h1 class="time-display" id="timeDisplay" aria-live="polite"></h1>
+      <div class="analog-clock" aria-hidden="true">
+       <div class="clock-marker"></div><span class="analog-number n12">12</span> <span class="analog-number n3">3</span> <span class="analog-number n6">6</span> <span class="analog-number n9">9</span> <span class="hand hour-hand" id="hourHand"></span> <span class="hand minute-hand" id="minuteHand"></span> <span class="hand second-hand" id="secondHand"></span> <span class="clock-pin"></span>
+      </div>
+     </div>
+     <p class="date-display" id="dateDisplay"></p>
+     <div class="battery-wrap" id="batteryWrap" aria-live="polite"><span class="battery-icon" id="batteryIcon" aria-hidden="true"></span>
+      <div class="battery-meter" aria-hidden="true">
+       <div class="battery-meter-fill" id="batteryMeterFill"></div>
+      </div>
+      <div class="battery-circle" id="batteryCircle" aria-hidden="true">
+       <span class="battery-circle-value" id="batteryCircleValue"></span>
+       <span class="battery-circle-bolt" id="batteryCircleBolt" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 11-13h-7z"/></svg></span>
+      </div>
+      <div class="battery-vertical-gauge" aria-hidden="true">
+       <div class="battery-vertical-fill" id="batteryVerticalFill"></div>
+      </div><span class="battery-text" id="batteryText"></span> <span class="battery-detail hidden" id="batteryDetail" aria-label="En charge"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 11-13h-7z"/></svg></span>
+     </div>
+    </div>
+   </section>
+   <div class="utility-bar" id="utilityBar"><button type="button" id="settingsButton" class="round-control" aria-label="Ouvrir les réglages" aria-expanded="false" aria-controls="settingsPanel"> <i data-lucide="sliders-horizontal" aria-hidden="true"></i> </button> <button type="button" id="exitFullscreenButton" class="round-control" aria-label="Activer le plein écran" title="Activer le plein écran"> <i data-lucide="maximize" aria-hidden="true"></i> </button>
+   </div>
+   <aside class="settings-panel" id="settingsPanel" aria-labelledby="settingsTitle" aria-hidden="true">
+    <div class="panel-heading">
+     <div>
+      <h2 data-template-id="settings-title" class="canva-text panel-title" id="settingsTitle" style="color: rgb(248, 250, 252); font-weight: 700; font-style: normal; font-size: 24px;">Personnaliser</h2>
+      <p data-template-id="settings-intro" class="canva-text panel-intro" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 16px;">Ajustez l’ambiance, les animations et l’affichage de votre écran.</p>
+     </div><button type="button" id="closeSettingsButton" class="panel-close" aria-label="Fermer les réglages"> <i data-lucide="x" aria-hidden="true"></i> </button>
+    </div>
+    <form class="settings-form" id="settingsForm">
+     <div class="setting-group"><label data-template-id="theme-label" class="canva-text setting-label" for="themeSelect" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Ambiance</label> <select id="themeSelect"> <option value="ocean">Océan nocturne</option> <option value="violet">Violet profond</option> <option value="ember">Braise douce</option> <option value="forest">Forêt lunaire</option>
+       <option value="rose">Rose cosmique</option><option value="crimson">Rouge rubis</option>
+       <option value="amber">Ambre vintage</option><option value="mint">Menthe glacée</option>
+       <option value="ice">Glacier</option><option value="mono">Monochrome</option>
+       <option value="matrix">Terminal vert</option><option value="sunset">Coucher de soleil</option>
+        <option value="aurora">Aurore boréale</option><option value="cyberpunk">Cyberpunk néon</option>
+        <option value="galaxy">Nébuleuse galactique</option><option value="deepsea">Abysse bioluminescent</option>
+        <option value="sakura">Jardin de sakura</option><option value="gold">Or royal</option>
+        <option value="lava">Cœur de volcan</option><option value="cotton">Bonbon pastel</option>
+        <option value="plasma">Plasma électrique</option><option value="eclipse">Éclipse lunaire</option>
+        <option value="arctic">Cristal arctique</option><option value="toxic">Toxique fluorescent</option> </select>
+     </div>
+     <div class="setting-group"><label data-template-id="clock-style-label" class="canva-text setting-label" for="clockStyleSelect" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Style de l’horloge</label> <select id="clockStyleSelect"> <option value="minimal">Numérique minimaliste</option> <option value="neon">Néon</option> <option value="circle">Chiffres dans un cercle</option> <option value="analog">Affichage analogique</option>
+       <option value="retro">Rétro numérique</option><option value="terminal">Terminal</option>
+       <option value="soft">Typographie douce</option><option value="seconds">Heure avec secondes</option>
+        <option value="glitch">Glitch cybernétique</option><option value="outline">Contour lumineux</option>
+        <option value="serif">Élégance classique</option><option value="lcd">Écran LCD rétro</option>
+        <option value="mono">Monospace futuriste</option><option value="shadow">Ombre sculptée</option>
+        <option value="rainbow">Spectre chromatique</option><option value="thin">Trait ultra-fin</option> </select>
+     </div>
+     <div class="setting-group"><label data-template-id="battery-style-label" class="canva-text setting-label" for="batteryStyleSelect" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Style de la batterie</label> <select id="batteryStyleSelect"> <option value="classic">Icône classique</option> <option value="horizontal">Jauge horizontale</option> <option value="ring">Anneau circulaire</option> <option value="vertical">Indicateur vertical</option>
+       <option value="segmented">Jauge segmentée</option><option value="compact">Compacte</option>
+        <option value="pill">Capsule lumineuse</option><option value="glass">Verre dépoli</option>
+        <option value="neon">Néon encadré</option><option value="bars">Barres industrielles</option>
+        <option value="hex">Cristal hexagonal</option><option value="stack">Panneau technique</option>
+        <option value="orbit">Orbite énergétique</option> </select>
+     </div>
+     <div class="setting-group"><label data-template-id="effects-label" class="canva-text setting-label" for="effectsRange" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Intensité des effets</label> <input id="effectsRange" type="range" min="0" max="100" value="72">
+     </div>
+     <div class="setting-group"><label data-template-id="speed-label" class="canva-text setting-label" for="speedRange" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Vitesse de l’animation</label> <input id="speedRange" type="range" min="0.3" max="2" step="0.1" value="1">
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="breathing-label" class="canva-text setting-label !mb-0" for="breathingToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Halo respirant</label> <label class="switch" aria-label="Activer ou désactiver le halo respirant"> <input id="breathingToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="orbit-label" class="canva-text setting-label !mb-0" for="orbitToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Anneau lumineux orbital</label> <label class="switch" aria-label="Activer ou désactiver l’anneau orbital"> <input id="orbitToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="particles-label" class="canva-text setting-label !mb-0" for="particlesToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Particules lentes</label> <label class="switch" aria-label="Activer ou désactiver les particules"> <input id="particlesToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="waves-label" class="canva-text setting-label !mb-0" for="wavesToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Vagues circulaires</label> <label class="switch" aria-label="Activer ou désactiver les vagues circulaires"> <input id="wavesToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="pulse-label" class="canva-text setting-label !mb-0" for="pulseToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Pulsation douce de l’interface</label> <label class="switch" aria-label="Activer ou désactiver la pulsation de l’interface"> <input id="pulseToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="reduced-motion-label" class="canva-text setting-label !mb-0" for="reducedMotionToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Mode réduit</label> <label class="switch" aria-label="Activer le mode réduit"> <input id="reducedMotionToggle" type="checkbox"><span class="slider"></span> </label>
+      </div>
+      <p data-template-id="reduced-motion-help" class="canva-text setting-help" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 16px;">Réduit les animations pour un affichage plus calme et plus confortable.</p>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="wake-lock-label" class="canva-text setting-label !mb-0" for="wakeLockToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Maintenir l’écran actif</label> <label class="switch" aria-label="Maintenir l’écran actif lorsque disponible"> <input id="wakeLockToggle" type="checkbox"><span class="slider"></span> </label>
+      </div>
+      <p data-template-id="wake-lock-help" class="canva-text setting-help" id="wakeLockHelp" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 16px;">Vérification de la disponibilité sur cet appareil…</p>
+     </div>
+     <div class="setting-group"><label data-template-id="time-format-label" class="canva-text setting-label" for="formatSelect" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Format de l’heure</label> <select id="formatSelect"> <option value="24">24 heures</option> <option value="12">12 heures</option> </select>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="date-toggle-label" class="canva-text setting-label !mb-0" for="dateToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Afficher la date</label> <label class="switch" aria-label="Afficher ou masquer la date"> <input id="dateToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group">
+      <div class="toggle-row"><label data-template-id="battery-toggle-label" class="canva-text setting-label !mb-0" for="batteryToggle" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Afficher la batterie</label> <label class="switch" aria-label="Afficher ou masquer la batterie"> <input id="batteryToggle" type="checkbox" checked=""><span class="slider"></span> </label>
+      </div>
+     </div>
+     <div class="setting-group"><label data-template-id="brightness-label" class="canva-text setting-label" for="brightnessRange" style="color: rgb(226, 232, 240); font-weight: 600; font-style: normal; font-size: 16px;">Luminosité visuelle</label> <input id="brightnessRange" type="range" min="0.45" max="1.25" step="0.05" value="1">
+     </div>
+    </form>
+   </aside>
+   <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+  </main>
+  <script src="js/economiseur.js" defer></script>
+ 
+</body></html>
