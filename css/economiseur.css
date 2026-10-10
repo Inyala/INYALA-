@@ -1,0 +1,751 @@
+:root {
+      --accent: #7dd3fc;
+      --accent-soft: rgba(125, 211, 252, .22);
+      --orb-one: #155e75;
+      --orb-two: #312e81;
+      --glow-opacity: .72;
+      --motion-speed: 1;
+      --effect-intensity: .72;
+      --screen-brightness: 1;
+      --ring-size: min(58vmin, 440px);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      width: 100%;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: #f8fafc;
+      background: #07111e;
+    }
+
+    button, select, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .screen-shell {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      filter: brightness(var(--screen-brightness));
+      background:
+        radial-gradient(circle at 50% 50%, rgba(22, 55, 82, .34), transparent 48%),
+        linear-gradient(135deg, #050913 0%, #091828 50%, #050913 100%);
+    }
+
+    .screen-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -4;
+      opacity: .45;
+      background-image: radial-gradient(rgba(255,255,255,.28) .6px, transparent .6px);
+      background-size: 24px 24px;
+      mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+    }
+
+    .screen-shell.interface-pulse::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      opacity: calc(var(--effect-intensity) * .26);
+      background: radial-gradient(circle at center, transparent 25%, var(--accent-soft) 90%);
+      animation: interfacePulse calc(8s / var(--motion-speed)) ease-in-out infinite;
+    }
+
+    .orb {
+      position: absolute;
+      z-index: -2;
+      width: min(48vw, 650px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      filter: blur(54px);
+      opacity: var(--glow-opacity);
+      will-change: transform;
+      animation: drift calc(18s / var(--motion-speed)) ease-in-out infinite alternate;
+    }
+    .orb-a { top: -18%; left: -12%; background: var(--orb-one); }
+    .orb-b { right: -12%; bottom: -24%; background: var(--orb-two); animation-delay: -7s; animation-direction: alternate-reverse; }
+    .orb-c { width: min(24vw, 340px); top: 38%; right: 24%; background: var(--accent); opacity: calc(var(--glow-opacity) * .26); animation-delay: -3s; }
+
+    .particle-field { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+    .particle {
+      position: absolute;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 13px var(--accent);
+      opacity: calc(var(--effect-intensity) * .46);
+      animation: floatParticle calc(var(--duration) / var(--motion-speed)) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .screen-shell.particles-off .particle-field { display: none; }
+
+    .clock-stage {
+      height: 100vh;
+      height: 100dvh;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(.8rem, 3vmin, 2rem);
+    }
+    .clock-stack {
+      width: min(100%, 1000px);
+      max-height: 100%;
+      text-align: center;
+      margin: auto;
+      transform: none !important;
+      transition: filter .35s ease;
+    }
+
+    .clock-visual {
+      position: relative;
+      width: min(100%, 900px);
+      min-height: min(52vmin, 430px);
+      display: grid;
+      place-items: center;
+      margin-inline: auto;
+    }
+
+    .clock-ring,
+    .orbital-ring,
+    .wave-layer {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: var(--ring-size);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .clock-ring {
+      border: 2px solid rgba(226,232,240,.32);
+      box-shadow:
+        0 0 0 8px rgba(125,211,252,.035),
+        inset 0 0 38px rgba(125,211,252,.08),
+        0 0 38px var(--accent-soft);
+      opacity: .95;
+      transition: border-color .35s ease, box-shadow .35s ease;
+    }
+
+    .clock-ring::before,
+    .clock-ring::after {
+      content: "";
+      position: absolute;
+      border-radius: inherit;
+      inset: 11%;
+      border: 1px solid rgba(226,232,240,.1);
+    }
+    .clock-ring::after {
+      inset: -5px;
+      border-color: var(--accent);
+      opacity: calc(var(--effect-intensity) * .62);
+      filter: blur(.2px);
+    }
+
+    .screen-shell.breathing-on .clock-ring {
+      animation: breathingHalo calc(5.5s / var(--motion-speed)) ease-in-out infinite;
+    }
+
+    .orbital-ring {
+      width: calc(var(--ring-size) + 88px);
+      border: 1px dashed rgba(226,232,240,.23);
+      opacity: calc(var(--effect-intensity) * .7);
+      animation: orbit calc(17s / var(--motion-speed)) linear infinite;
+    }
+    .orbital-ring::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      top: -7px;
+      left: 50%;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 15px 4px var(--accent-soft), 0 0 30px var(--accent);
+    }
+    .screen-shell.orbit-off .orbital-ring { display: none; }
+
+    .wave-layer { overflow: visible; }
+    .wave {
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--accent);
+      border-radius: inherit;
+      opacity: 0;
+      transform: scale(.72);
+      animation: ripple calc(6s / var(--motion-speed)) ease-out infinite;
+    }
+    .wave:nth-child(2) { animation-delay: -2s; }
+    .wave:nth-child(3) { animation-delay: -4s; }
+    .screen-shell.waves-off .wave-layer { display: none; }
+
+    .clock-stack.pulse-on {
+      animation: stackPulse calc(7s / var(--motion-speed)) ease-in-out infinite;
+    }
+
+    .time-display {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #f8fafc;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: clamp(2.45rem, 13vmin, 8rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.09em;
+      text-shadow: 0 0 28px rgba(255,255,255,.13), 0 0 70px var(--accent-soft);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clock-stack.clock-neon .time-display {
+      color: var(--accent);
+      text-shadow: 0 0 6px #fff, 0 0 18px var(--accent), 0 0 48px var(--accent), 0 0 90px var(--accent-soft);
+    }
+
+    .clock-stack.clock-circle .time-display {
+      width: min(43vmin, 330px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      padding: .5rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      font-size: clamp(2rem, 6vmin, 4.6rem);
+      letter-spacing: -.13em;
+      background: rgba(3, 12, 23, .46);
+      box-shadow: inset 0 0 45px var(--accent-soft), 0 0 40px var(--accent-soft);
+    }
+
+    .analog-clock {
+      position: relative;
+      z-index: 1;
+      width: min(43vmin, 330px);
+      aspect-ratio: 1;
+      display: none;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(125,211,252,.17) 0 2%, rgba(4,13,25,.82) 3% 70%, rgba(125,211,252,.1) 100%);
+      box-shadow: inset 0 0 42px var(--accent-soft), 0 0 45px var(--accent-soft);
+    }
+    .clock-stack.clock-analog .time-display { display: none; }
+    .clock-stack.clock-analog .analog-clock { display: block; }
+
+    .clock-marker {
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: repeating-conic-gradient(from 0deg, var(--accent) 0deg 1deg, transparent 1deg 6deg);
+      -webkit-mask: radial-gradient(circle, transparent 0 85%, #000 86%);
+      mask: radial-gradient(circle, transparent 0 85%, #000 86%);
+      opacity: .7;
+    }
+    .analog-number {
+      position: absolute;
+      color: #e2e8f0;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: clamp(.75rem, 1.6vw, 1rem);
+      font-weight: 700;
+    }
+    .n12 { top: 8%; left: 50%; transform: translateX(-50%); }
+    .n3 { right: 9%; top: 50%; transform: translateY(-50%); }
+    .n6 { bottom: 8%; left: 50%; transform: translateX(-50%); }
+    .n9 { left: 9%; top: 50%; transform: translateY(-50%); }
+
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      width: 4px;
+      border-radius: 999px;
+      transform-origin: bottom center;
+      background: #f8fafc;
+      box-shadow: 0 0 9px rgba(255,255,255,.72);
+    }
+    .hour-hand { height: 23%; width: 6px; }
+    .minute-hand { height: 34%; }
+    .second-hand { height: 39%; width: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .clock-pin {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent);
+      transform: translate(-50%, -50%);
+    }
+
+    .date-display {
+      position: relative;
+      z-index: 1;
+      margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+      color: rgba(226, 232, 240, .78);
+      font-size: clamp(.9rem, 2vw, 1.2rem);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .battery-wrap {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      min-width: 144px;
+      margin-top: clamp(1.2rem, 3vw, 2rem);
+      padding: .65rem .9rem;
+      border: 1px solid rgba(226,232,240,.16);
+      border-radius: 999px;
+      color: rgba(241,245,249,.84);
+      background: rgba(5, 12, 23, .47);
+      backdrop-filter: blur(10px);
+      font-size: .88rem;
+    }
+    .battery-icon {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 auto;
+      width: 25px;
+      height: 14px;
+      border: 2px solid var(--accent);
+      border-radius: 3px;
+      box-sizing: border-box;
+      color: var(--accent);
+      background: linear-gradient(90deg, var(--accent) 0 60%, transparent 60% 100%);
+      background-clip: content-box;
+      padding: 1px;
+    }
+    .battery-icon::before {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 3px;
+      width: 3px;
+      height: 5px;
+      border-radius: 0 2px 2px 0;
+      background: var(--accent);
+    }
+    .battery-icon::after {
+      content: "ϟ";
+      display: none;
+      position: absolute;
+      inset: -4px 0 0;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 900;
+      text-shadow: 0 0 3px #0b1726;
+    }
+    .battery-wrap.is-charging .battery-icon::after { display: flex; }
+    .battery-text { font-variant-numeric: tabular-nums; }
+    .battery-detail { color: var(--accent); font-size: 1rem; line-height: 1; font-weight: 900; }
+
+    .battery-meter,
+    .battery-circle,
+    .battery-vertical-gauge { display: none; }
+
+    .battery-wrap.battery-horizontal {
+      width: min(100%, 245px);
+      display: inline-grid;
+      grid-template-columns: 1fr auto;
+      gap: .5rem .7rem;
+      border-radius: 14px;
+      text-align: left;
+    }
+    .battery-horizontal .battery-icon { display: none; }
+    .battery-horizontal .battery-meter {
+      display: block;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(226,232,240,.16);
+    }
+    .battery-meter-fill {
+      height: 100%;
+      width: 60%;
+      border-radius: inherit;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      transition: width .45s ease, background .3s ease;
+    }
+    .battery-horizontal .battery-text { grid-column: 1 / -1; }
+
+    .battery-wrap.battery-ring {
+      width: 104px;
+      min-width: 104px;
+      height: 104px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(5,12,23,.42);
+    }
+    .battery-ring .battery-icon,
+    .battery-ring .battery-meter,
+    .battery-ring .battery-vertical-gauge,
+    .battery-ring .battery-text,
+    .battery-ring .battery-detail { display: none !important; }
+    .battery-ring .battery-circle {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 60%, rgba(226,232,240,.13) 0);
+      box-shadow: 0 0 18px var(--accent-soft);
+    }
+    .battery-circle::before {
+      content: "";
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: #091727;
+      box-shadow: inset 0 0 12px rgba(0,0,0,.4);
+    }
+    .battery-circle-value {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .8rem;
+      font-weight: 700;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .battery-circle-bolt {
+      display: none;
+      position: absolute;
+      z-index: 2;
+      top: 17px;
+      right: 17px;
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #07111f;
+      background: #86efac;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 0 8px rgba(134,239,172,.4);
+      pointer-events: none;
+    }
+    .battery-ring.is-charging .battery-circle-bolt { display: flex; }
+
+    .battery-wrap.battery-vertical {
+      width: 88px;
+      min-width: 88px;
+      min-height: 138px;
+      flex-direction: column;
+      border-radius: 20px;
+    }
+    .battery-wrap.battery-vertical .battery-icon,
+    .battery-wrap.battery-vertical .battery-meter,
+    .battery-wrap.battery-vertical .battery-circle { display: none !important; }
+    .battery-wrap.battery-vertical .battery-vertical-gauge {
+      position: relative;
+      display: block;
+      width: 22px;
+      height: 72px;
+      padding: 3px;
+      overflow: hidden;
+      flex: 0 0 72px;
+      border: 1px solid rgba(226,232,240,.42);
+      border-radius: 6px;
+    }
+    .battery-wrap.battery-vertical .battery-vertical-gauge::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 3px;
+      left: 5px;
+      top: -5px;
+      border-radius: 3px 3px 0 0;
+      background: rgba(226,232,240,.56);
+    }
+    .battery-vertical-fill {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      bottom: 3px;
+      height: 60%;
+      max-height: calc(100% - 6px);
+      border-radius: 3px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      transition: height .45s ease, background .3s ease;
+    }
+
+    .battery-wrap.is-charging .battery-detail { color: #86efac; }
+
+    .utility-bar {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      display: flex;
+      gap: .65rem;
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .utility-bar.is-hidden { opacity: 0; pointer-events: none; transform: translateY(-12px); }
+    .round-control {
+      width: 48px;
+      height: 48px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(226,232,240,.22);
+      border-radius: 999px;
+      color: #f8fafc;
+      background: rgba(6, 16, 30, .65);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .round-control:hover { transform: translateY(-2px); background: rgba(20, 42, 64, .85); border-color: var(--accent); }
+    .round-control:focus-visible, .panel-close:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 20;
+      width: min(100%, 400px);
+      height: 100vh;
+      padding: 1.25rem;
+      overflow-y: auto;
+      color: #e2e8f0;
+      background: rgba(7, 17, 30, .96);
+      border-left: 1px solid rgba(226,232,240,.14);
+      backdrop-filter: blur(22px);
+      transform: translateX(105%);
+      transition: transform .35s ease;
+      box-shadow: -20px 0 60px rgba(0,0,0,.24);
+    }
+    .settings-panel.is-open { transform: translateX(0); }
+    .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(226,232,240,.12); }
+    .panel-title { margin: 0; font-size: 1.25rem; font-weight: 700; }
+    .panel-intro { margin: .35rem 0 0; color: #94a3b8; font-size: .86rem; }
+    .panel-close { display: grid; place-items: center; width: 42px; height: 42px; border: 0; border-radius: 12px; color: #e2e8f0; background: rgba(148,163,184,.12); cursor: pointer; }
+    .settings-form { display: grid; gap: 1rem; padding: 1.2rem 0 2rem; }
+    .setting-group { padding: 1rem; border: 1px solid rgba(226,232,240,.11); border-radius: 16px; background: rgba(255,255,255,.035); }
+    .setting-label { display: block; margin-bottom: .6rem; color: #e2e8f0; font-size: .88rem; font-weight: 600; }
+    .setting-help { margin: .4rem 0 0; color: #94a3b8; font-size: .76rem; line-height: 1.4; }
+    select, input[type="range"] { width: 100%; accent-color: var(--accent); }
+    select { min-height: 44px; padding: .65rem .75rem; color: #f8fafc; border: 1px solid rgba(226,232,240,.2); border-radius: 10px; background: #102238; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .switch { position: relative; width: 50px; height: 28px; flex: none; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; border-radius: 999px; background: #334155; cursor: pointer; transition: .2s; }
+    .slider::before { content: ""; position: absolute; width: 20px; height: 20px; left: 4px; top: 4px; border-radius: 50%; background: white; transition: .2s; }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(22px); }
+    .switch input:disabled + .slider { opacity: .44; cursor: not-allowed; }
+
+    .status-message {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 50%;
+      z-index: 25;
+      max-width: calc(100% - 2rem);
+      padding: .65rem .95rem;
+      border: 1px solid rgba(226,232,240,.15);
+      border-radius: 999px;
+      color: #cbd5e1;
+      background: rgba(6,16,30,.82);
+      backdrop-filter: blur(10px);
+      font-size: .82rem;
+      text-align: center;
+      transform: translate(-50%, 130%);
+      opacity: 0;
+      transition: transform .3s ease, opacity .3s ease;
+    }
+    .status-message.show { transform: translate(-50%, 0); opacity: 1; }
+
+    .hidden { display: none !important; }
+
+    @keyframes drift { from { transform: translate3d(-2%, -1%, 0) scale(.96); } to { transform: translate3d(9%, 8%, 0) scale(1.08); } }
+    @keyframes floatParticle { from { transform: translate3d(0, 105vw, 0); } to { transform: translate3d(var(--drift), -12vw, 0); } }
+    @keyframes breathingHalo {
+      0%, 100% { transform: translate(-50%, -50%) scale(.96); opacity: .56; box-shadow: 0 0 20px var(--accent-soft), inset 0 0 22px var(--accent-soft); }
+      50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; box-shadow: 0 0 70px var(--accent-soft), inset 0 0 48px var(--accent-soft); }
+    }
+    @keyframes orbit { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    @keyframes ripple {
+      0% { transform: scale(.72); opacity: calc(var(--effect-intensity) * .55); }
+      100% { transform: scale(1.24); opacity: 0; }
+    }
+    @keyframes stackPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.16) drop-shadow(0 0 16px var(--accent-soft)); }
+    }
+    @keyframes interfacePulse {
+      0%, 100% { opacity: calc(var(--effect-intensity) * .08); }
+      50% { opacity: calc(var(--effect-intensity) * .3); }
+    }
+
+
+    /* Variantes supplémentaires d'horloge et de batterie. */
+    .clock-stack.clock-retro .time-display { font-family: "Courier New", monospace; letter-spacing: .02em; color: #fcd34d; text-shadow: 3px 3px 0 #78350f; }
+    .clock-stack.clock-terminal .time-display { font-family: "Courier New", monospace; color: #4ade80; text-shadow: 0 0 12px #22c55e; letter-spacing: .02em; }
+    .clock-stack.clock-soft .time-display { font-family: system-ui, sans-serif; font-weight: 300; letter-spacing: -.055em; text-shadow: none; }
+    .clock-stack.clock-glitch .time-display { color: #fff; text-shadow: 3px 0 #fb7185, -3px 0 #22d3ee, 0 0 24px var(--accent); letter-spacing: -.075em; }
+    .clock-stack.clock-outline .time-display { color: transparent; -webkit-text-stroke: 1.5px var(--accent); text-shadow: 0 0 22px var(--accent-soft); }
+    .clock-stack.clock-serif .time-display { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.055em; }
+    .clock-stack.clock-lcd .time-display { font-family: "Courier New", monospace; color: var(--accent); background: rgba(0,0,0,.38); display: inline-block; padding: .14em .28em; border: 1px solid var(--accent-soft); border-radius: .12em; text-shadow: 0 0 9px var(--accent-soft); letter-spacing: .015em; }
+    .clock-stack.clock-mono .time-display { font-family: ui-monospace, monospace; font-weight: 500; letter-spacing: -.025em; }
+    .clock-stack.clock-shadow .time-display { text-shadow: 0 .08em 0 #000, 0 .16em 0 rgba(0,0,0,.55), 0 0 24px var(--accent-soft); }
+    .clock-stack.clock-rainbow .time-display { background: linear-gradient(90deg,#fda4af,#fcd34d,#86efac,#67e8f9,#c4b5fd,#f0abfc); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
+    .clock-stack.clock-thin .time-display { font-weight: 200; letter-spacing: -.07em; text-shadow: 0 0 20px var(--accent-soft); }
+    .clock-stack.clock-seconds .time-display { font-size: clamp(2.2rem, 11vmin, 7rem); }
+    .battery-wrap.battery-segmented { width: min(100%, 240px); display: inline-grid; grid-template-columns: 1fr; border-radius: 14px; text-align: left; }
+    .battery-segmented .battery-icon, .battery-segmented .battery-circle, .battery-segmented .battery-vertical-gauge { display: none; }
+    .battery-segmented .battery-meter { display: flex; gap: 3px; height: 13px; background: transparent; overflow: visible; }
+    .battery-segmented .battery-meter-fill { background: repeating-linear-gradient(90deg, var(--accent) 0 12px, transparent 12px 15px); box-shadow: none; }
+    .battery-wrap.battery-compact { min-width: 0; padding: .45rem .7rem; gap: .4rem; font-size: .78rem; }
+    .battery-compact .battery-meter, .battery-compact .battery-circle, .battery-compact .battery-vertical-gauge { display: none; }
+    .battery-compact .battery-icon { width: 22px; height: 12px; }
+    .battery-compact .battery-detail { display: inline-flex; }
+    .round-control svg, .panel-close svg { display: block; }
+    @media (max-width: 640px) { .round-control { width: 44px; height: 44px; } }
+    @media (max-height: 500px) and (orientation: landscape) {
+      .clock-stage { height: 100dvh; min-height: 0; }
+      .clock-stack { width: min(100%, 900px); max-height: 100%; }
+      .battery-wrap { margin-top: .35rem; }
+    }
+    @media (orientation: landscape) and (max-height: 430px) {
+      .clock-visual { min-height: min(58vh, 250px); }
+      .time-display { font-size: clamp(2rem, 11vh, 5.2rem); }
+      :root { --ring-size: min(54vh, 230px); }
+      .date-display { margin-top: .25rem; }
+      .battery-wrap { padding: .35rem .6rem; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --ring-size: min(72vmin, 320px); }
+      .utility-bar { top: .75rem; right: .75rem; }
+      .settings-panel { border-left: 0; }
+      .time-display { letter-spacing: -.075em; }
+      .clock-visual { min-height: min(64vmin, 340px); }
+      .orbital-ring { width: calc(var(--ring-size) + 42px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .screen-shell:not(.motion-override) *,
+      .screen-shell:not(.motion-override) *::before,
+      .screen-shell:not(.motion-override) *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    .screen-shell.reduced-motion *,
+    .screen-shell.reduced-motion *::before,
+    .screen-shell.reduced-motion *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+
+    /* Corrections mobile/PC : viewport réel, panneaux accessibles et animations moins coûteuses. */
+    html { height: 100%; }
+    body { min-height: 100%; min-height: 100dvh; }
+    .screen-shell, .clock-stage { min-height: 100vh; min-height: 100dvh; height: 100vh; height: 100dvh; }
+    .settings-panel {
+      height: 100vh;
+      height: 100dvh;
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .utility-bar { padding-top: env(safe-area-inset-top); }
+    button, select, input { touch-action: manipulation; }
+    input[type="range"] { min-height: 32px; cursor: pointer; }
+    .setting-label { line-height: 1.35; }
+    .clock-visual { min-width: 0; }
+    @media (max-width: 640px) {
+      :root { --ring-size: min(78vw, 360px); }
+      .clock-stage { padding: 1rem; }
+      .clock-visual { min-height: min(82vw, 360px); }
+      .time-display { font-size: clamp(3rem, 14vw, 6.5rem); overflow-wrap: normal; }
+      .clock-stack.clock-circle .time-display { width: min(68vw, 300px); font-size: clamp(2rem, 8vw, 3.8rem); }
+      .analog-clock { width: min(68vw, 300px); }
+      .orbital-ring { width: calc(var(--ring-size) + 30px); }
+      .settings-panel { width: 100%; border-left: 0; }
+      .setting-group { padding: .85rem; }
+      .status-message { bottom: max(1rem, env(safe-area-inset-bottom)); border-radius: 14px; }
+    }
+    @media (max-height: 500px) and (orientation: landscape) {
+      .clock-stage { padding: .5rem 3.5rem; }
+      .clock-visual { min-height: min(68vh, 330px); }
+      :root { --ring-size: min(62vh, 300px); }
+      .time-display { font-size: clamp(2.5rem, 10vh, 5.5rem); }
+      .date-display { margin-top: .5rem; font-size: .8rem; }
+      .battery-wrap { margin-top: .5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .orb, .particle, .wave, .orbital-ring, .clock-ring, .clock-stack, .screen-shell::after {
+        animation: none !important;
+      }
+    }
+
+  
+
+/* Styles de batterie supplémentaires */
+.battery-wrap.battery-pill { border-radius: 999px; border-color: var(--accent); box-shadow: 0 0 18px var(--accent-soft), inset 0 0 12px rgba(255,255,255,.035); }
+.battery-pill .battery-icon { border-radius: 999px; height: 16px; }
+.battery-pill .battery-icon::before { border-radius: 0 2px 2px 0; }
+.battery-wrap.battery-glass { background: linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.025)); border-color: rgba(255,255,255,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 12px 30px rgba(0,0,0,.18); }
+.battery-wrap.battery-glass .battery-meter { display:block; width: 94px; height: 8px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.12); }
+.battery-glass .battery-icon, .battery-glass .battery-circle, .battery-glass .battery-vertical-gauge { display:none; }
+.battery-glass .battery-text { font-weight:700; }
+.battery-wrap.battery-neon { border-color:var(--accent); border-radius:8px; box-shadow:0 0 7px var(--accent-soft), inset 0 0 12px var(--accent-soft); }
+.battery-neon .battery-icon { box-shadow:0 0 10px var(--accent-soft); }
+.battery-wrap.battery-neon .battery-detail { filter:drop-shadow(0 0 5px #86efac); }
+.battery-wrap.battery-bars { min-width:0; display:inline-flex; gap:.55rem; border:0; background:transparent; padding:.45rem .6rem; }
+.battery-bars .battery-icon, .battery-bars .battery-circle, .battery-bars .battery-vertical-gauge { display:none; }
+.battery-bars .battery-meter { display:flex; width:92px; height:25px; gap:3px; align-items:stretch; background:transparent; overflow:visible; }
+.battery-bars .battery-meter-fill { width:100% !important; background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 11px); border:1px solid var(--accent); box-shadow:0 0 9px var(--accent-soft); }
+.battery-bars .battery-text { font-weight:800; }
+.battery-wrap.battery-hex { border-radius:8px 20px; border:1px solid var(--accent); clip-path:polygon(8% 0,92% 0,100% 25%,100% 75%,92% 100%,8% 100%,0 75%,0 25%); padding:.8rem 1.1rem; }
+.battery-hex .battery-icon { border-radius:1px; }
+.battery-wrap.battery-stack { min-width:0; display:inline-grid; grid-template-columns:auto auto; gap:.2rem .65rem; border-radius:8px; border-left:4px solid var(--accent); text-align:left; }
+.battery-stack .battery-icon, .battery-stack .battery-circle, .battery-stack .battery-vertical-gauge { display:none; }
+.battery-stack .battery-meter { display:block; grid-column:1 / -1; height:5px; border-radius:0; background:rgba(255,255,255,.12); }
+.battery-stack .battery-meter-fill { border-radius:0; box-shadow:none; }
+.battery-stack .battery-text { font-family:ui-monospace,monospace; }
+.battery-wrap.battery-orbit { width:100px; min-width:100px; height:100px; padding:0; border-radius:50%; border:1px dashed var(--accent); background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%); box-shadow:0 0 0 6px var(--accent-soft),0 0 24px var(--accent-soft); }
+.battery-orbit .battery-icon, .battery-orbit .battery-meter, .battery-orbit .battery-vertical-gauge, .battery-orbit .battery-text, .battery-orbit .battery-detail { display:none !important; }
+.battery-orbit .battery-circle { display:grid; place-items:center; width:72px; height:72px; border-radius:50%; }
+.battery-orbit .battery-circle::before { width:57px; height:57px; }
+.battery-wrap.battery-vertical { overflow:visible; }
+.battery-wrap.battery-vertical .battery-vertical-gauge { box-sizing:border-box; overflow:hidden; }
+.battery-wrap.battery-vertical .battery-vertical-gauge::before { top:2px; z-index:2; background:var(--accent); box-shadow:0 0 5px var(--accent); }
+.battery-wrap.battery-vertical .battery-vertical-fill { left:3px; right:3px; bottom:3px; width:auto !important; max-height:calc(100% - 6px); }
+
+
+/* Taille de l'horloge automatique et centrage permanent */
+.clock-stage { display:flex; align-items:center; justify-content:center; padding:clamp(.5rem,2.5vmin,1.5rem); }
+.clock-stack { width:min(100%, 900px); max-height:100%; }
+.time-display { font-size:clamp(2rem, min(11vw, 15vh), 7rem); max-width:100%; }
+.clock-stack.clock-circle .time-display { width:min(68vw, 300px); font-size:clamp(1.8rem, min(7vw, 10vh), 3.8rem); }
+@media (max-width:640px) { .time-display { font-size:clamp(2rem, min(12vw, 13vh), 5.2rem); } }
+@media (orientation:landscape) and (max-height:500px) { .clock-stage { padding:.35rem 3.5rem; } .clock-stack { gap:.15rem; } .clock-visual { min-height:min(52vh,220px); } .time-display { font-size:clamp(1.7rem, 9vh, 4.6rem); } .date-display { margin-top:.3rem; } .battery-wrap { margin-top:.35rem; } }
